@@ -1,0 +1,112 @@
+plugins {
+    id 'net.researchgate.release' version '2.3.4'
+    id 'co.riiid.gradle' version '0.4.2'
+    id 'com.jfrog.bintray' version '1.7'
+}
+
+repositories {
+    jcenter()
+}
+
+apply plugin: 'application'
+apply plugin: 'groovy'
+apply plugin: 'jacoco'
+apply plugin: 'maven-publish'
+
+group = "net.zedge.marathon.dsl"
+description = "DSL to make defining Marathon applications easier"
+
+mainClassName = 'net.zedge.marathon.MarathonDslMain'
+applicationDefaultJvmArgs = ["-Dnet.zedge.marathon.dsl.baseclass=net.zedge.marathon.dsl.DslScript"]
+
+ext {
+    slf4jVersion = '1.7.13'
+    unsnapshottedVersion = version.replaceAll("-SNAPSHOT", "")
+}
+
+dependencies {
+    compile "org.codehaus.groovy:groovy-all:2.4.6"
+    compile 'commons-cli:commons-cli:1.3.1'
+    testCompile "org.slf4j:slf4j-api:${slf4jVersion}"
+    testCompile "org.slf4j:slf4j-nop:${slf4jVersion}"
+    testCompile "org.spockframework:spock-core:1.0-groovy-2.4"
+    testCompile 'org.objenesis:objenesis:2.2'
+    testCompile( 'com.athaydes:spock-reports:1.2.10' ) {
+        transitive = false // this avoids affecting your version of Groovy/Spock
+    }
+//    testCompile 'com.github.fge:json-schema-validator:2.2.6'
+}
+
+tasks.withType(Tar) {
+    compression = Compression.GZIP
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.enabled true
+        html.enabled true
+        csv.enabled false
+        html.destination "${buildDir}/jacoco"
+    }
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier 'sources'
+}
+
+publishing {
+    publications {
+        publicRelease(MavenPublication) {
+            from components.java
+            artifact sourceJar
+            artifact distTar
+            artifact distZip
+        }
+    }
+}
+
+release {
+    revertOnFail = true
+    tagTemplate = "v${unsnapshottedVersion}"
+}
+
+github {
+    owner = 'zedge'
+    repo = 'marathon-dsl'
+    token = project.hasProperty('githubReleaseToken') ? githubReleaseToken : System.getenv('GITHUB_RELEASE_TOKEN')
+    tagName = "v${unsnapshottedVersion}"
+    name = "v${unsnapshottedVersion}"
+    assets = [
+            "build/distributions/marathon-dsl-${version}.zip"
+    ]
+}
+
+bintray {
+    user = project.hasProperty('bintrayUser') ? bintrayUser : System.getenv('BINTRAY_USER')
+    key = project.hasProperty('bintrayApiKey') ? bintrayApiKey : System.getenv('BINTRAY_API_KEY')
+    pkg {
+        repo = 'maven'
+        name = 'marathon-dsl'
+        userOrg = 'zedge'
+        licenses = ['Apache-2.0']
+        websiteUrl = 'https://github.com/zedge/marathon-dsl'
+        issueTrackerUrl = 'https://github.com/zedge/marathon-dsl/issues'
+        vcsUrl = 'https://github.com/zedge/marathon-dsl.git'
+        labels = ['marathon', 'mesos', 'dsl']
+        dryRun = false
+        publish = false
+        version {
+            name = project.version
+            desc = "Marathon-DSL version ${project.version}"
+            vcsTag = project.version
+        }
+        publications = ['publicRelease']
+    }
+}
+
+updateVersion.dependsOn ':githubRelease'
+afterReleaseBuild.dependsOn ':bintrayUpload'
+bintrayUpload.dependsOn ':distZip'
+githubRelease.dependsOn ':distZip'
