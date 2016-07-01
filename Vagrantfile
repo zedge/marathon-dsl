@@ -5,8 +5,8 @@
 VAGRANTFILE_API_VERSION = '2'
 
 PLATFORM = "virtualbox"
-BOX_NAME = "playa_mesos_ubuntu_14.04_201606060830"
-BASE_URL = "https://calculon.trd.zedge.net/vagrant/zedge"
+BOX_NAME = "playa_mesos_ubuntu_14.04_201601041324"
+BASE_URL = "http://downloads.mesosphere.io/playa-mesos"
 IP_ADDRESS = "10.141.141.10"
 VM_RAM = "2048"
 VM_CPUS = "2"
