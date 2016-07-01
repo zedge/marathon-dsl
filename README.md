@@ -37,7 +37,7 @@ the syntactical tricks Groovy employs.
 
 ### From Source
 
-Clone the repo, run `./gradlew fatJar`, then run `./bin/marathon-dsl`.
+You can build and run the `marathon-dsl` command by typing `./gradlew run`.
 
 ## Command Overview
 
