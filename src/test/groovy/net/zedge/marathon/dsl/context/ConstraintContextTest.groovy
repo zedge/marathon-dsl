@@ -17,6 +17,7 @@
 
 package net.zedge.marathon.dsl.context
 
+import net.zedge.marathon.dsl.DslVerificationException
 import spock.lang.Specification
 
 /**
@@ -24,72 +25,97 @@ import spock.lang.Specification
  */
 class ConstraintContextTest extends Specification {
 
-    def "cluster(String)"() {
-        when:
+    def "unique()"() {
+        given:
         def c = new ConstraintContext('foo')
+        when:
         c.unique()
         then:
         assert c.toJsonData() == ['foo', 'UNIQUE']
     }
 
-    def "cluster(String,String)"() {
+    def "unique(String)"() {
+        given:
+        def c = new ConstraintContext()
         when:
-        def c = new ConstraintContext('foo')
         c.unique('bar')
         then:
         assert c.toJsonData() == ['bar', 'UNIQUE']
     }
 
-    def "groupBy(int)"() {
-        when:
+    def "cluster(String)"() {
+        given:
         def c = new ConstraintContext('foo')
+        when:
+        c.cluster('bar')
+        then:
+        assert c.toJsonData() == ['foo', 'CLUSTER', 'bar']
+    }
+
+    def "cluster(String,String)"() {
+        given:
+        def c = new ConstraintContext()
+        when:
+        c.cluster('foo', 'bar')
+        then:
+        assert c.toJsonData() == ['foo', 'CLUSTER', 'bar']
+    }
+
+    def "groupBy(int)"() {
+        given:
+        def c = new ConstraintContext('foo')
+        when:
         c.groupBy(2)
         then:
         assert c.toJsonData() == ['foo', 'GROUP_BY', '2']
     }
 
     def "groupBy(String,int)"() {
-        when:
+        given:
         def c = new ConstraintContext()
+        when:
         c.groupBy('bar', 2)
         then:
         assert c.toJsonData() == ['bar', 'GROUP_BY', '2']
     }
 
     def "like(String)"() {
-        when:
+        given:
         def c = new ConstraintContext('foo')
+        when:
         c.like('regex')
         then:
         assert c.toJsonData() == ['foo', 'LIKE', 'regex']
     }
 
-    def "like(Pattern)"() {
-        when:
-        def c = new ConstraintContext('bar')
-        c.like(/regex/)
-        then:
-        assert c.toJsonData() == ['bar', 'LIKE', /regex/]
-    }
-
     def "unlike(String)"() {
-        when:
+        given:
         def c = new ConstraintContext('foo')
+        when:
         c.unlike('regex')
         then:
         assert c.toJsonData() == ['foo', 'UNLIKE', 'regex']
     }
 
-    def "unlike(Pattern)"() {
+    def "verifyConfig1"() {
+        setup:
+        def c = new ConstraintContext()
+        c.constraint = []
         when:
-        def c = new ConstraintContext('bar')
-        c.unlike(/regex/)
+        c.verifyConfig()
         then:
-        assert c.toJsonData() == ['bar', 'UNLIKE', /regex/]
+        DslVerificationException ex = thrown()
+        ex.message.matches(/^invalid constraint: .*/)
     }
 
-    def "verifyConfig"() {
-
+    def "verifyConfig2"() {
+        given:
+        def c = new ConstraintContext()
+        c.constraint = [null, 'UNIQUE']
+        when:
+        c.verifyConfig()
+        then:
+        DslVerificationException ex = thrown()
+        ex.message.matches(/^constraint field missing: .*/)
     }
-
 }

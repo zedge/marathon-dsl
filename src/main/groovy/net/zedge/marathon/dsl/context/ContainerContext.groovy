@@ -46,7 +46,7 @@ class ContainerContext extends DslContext {
     def verifyConfig() throws DslVerificationException {
         super.verifyConfig()
         if (!data.type) {
-            throw new DslCompilationException('container.type not specified!')
+            throw new DslVerificationException('container.type not specified!')
         }
     }
 

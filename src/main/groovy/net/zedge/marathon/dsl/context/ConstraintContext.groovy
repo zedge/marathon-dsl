@@ -95,19 +95,6 @@ class ConstraintContext extends DslContext {
      * LIKE accepts a regular expression as parameter, and allows you to run your tasks only on the slaves
      * whose field values match the regular expression:
      *
-     * <code>constraint('rack_id') like(/rack-[1-3]/)</code>
-     *
-     * @param value
-     * @return
-     */
-    def like(Pattern value) {
-        like(value.toString())
-    }
-
-    /**
-     * LIKE accepts a regular expression as parameter, and allows you to run your tasks only on the slaves
-     * whose field values match the regular expression:
-     *
      * <code>constraint('rack_id') like('rack-[1-3]')</code>
      *
      * @param value
@@ -115,18 +102,6 @@ class ConstraintContext extends DslContext {
      */
     def like(String value) {
         constraint = [this.field, 'LIKE', value]
-    }
-
-    /**
-     * Just like LIKE operator, but only run tasks on slaves whose field values don't match the regular expression:
-     *
-     * <code>constraint('rack_id') unlike(/rack-[7-9]/)</code>
-     *
-     * @param value
-     * @return
-     */
-    def unlike(Pattern value) {
-        like(value.toString())
     }
 
     /**
