@@ -43,3 +43,6 @@ env:
       1nxr6j5/NHQolIUInFONB71qEHpBqr8LcoG44IbJ4S7g5AeEvVXKx3+eLntWFaifC6ZoznWO
       BBx8vT8H28Gwr0XQDOprNP04+4TkxSdVJH1PHziffnOxQBLEKheZn/+4dDkLphuWfoN8rbhw
       MI+XYr0z4vIZG/0fFCra5EY7WOjETVGWjCs=
+
+after_success:
+- bash <(curl -s https://codecov.io/bash)
