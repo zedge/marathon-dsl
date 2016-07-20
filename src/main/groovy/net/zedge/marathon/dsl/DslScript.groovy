@@ -39,7 +39,7 @@ abstract class DslScript extends Script {
      * @param closure
      * @return
      */
-    def app(String id, Closure closure) {
+    def app(String id, @DelegatesTo(value = AppContext.class) Closure closure) {
         currentAppContext = new AppContext(id)
         currentAppContext.with(closure)
         apps << currentAppContext

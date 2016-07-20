@@ -63,7 +63,7 @@ class AppContext extends DslContext {
     // resource offer. It is necessary only to define this array if you are using HOST networking and no port mappings
     // are specified. This array is meant to replace the ports array, and makes it possible to specify a port name,
     // protocol and labels. Only one of ports and portDefinitions should be defined at the same time.
-    def portDefinition(Closure closure) {
+    def portDefinition(@DelegatesTo(value = PortDefinitionContext.class) Closure closure) {
         def context = new PortDefinitionContext()
         addToDataList('portDefinitions', context)
         context.with(closure)
@@ -100,7 +100,7 @@ class AppContext extends DslContext {
      * @param closure
      * @return
      */
-    def container(ContainerContext.Type type, Closure closure) {
+    def container(ContainerContext.Type type, @DelegatesTo(value = ContainerContext.class) Closure closure) {
         this.container(closure).type(type)
     }
 
@@ -110,7 +110,7 @@ class AppContext extends DslContext {
      * @param closure
      * @return
      */
-    ContainerContext container(Closure closure) {
+    ContainerContext container(@DelegatesTo(value = ContainerContext.class) Closure closure) {
         data.container = new ContainerContext()
         data.container.with(closure)
         data.container
@@ -141,7 +141,7 @@ class AppContext extends DslContext {
         context
     }
 
-    def constraint(String field, Closure closure) {
+    def constraint(String field, @DelegatesTo(value = ConstraintContext.class) Closure closure) {
         this.constraint(field).with(closure)
     }
 
@@ -152,17 +152,18 @@ class AppContext extends DslContext {
         context
     }
 
-    def healthCheck(Closure closure) {
+    def healthCheck(@DelegatesTo(value = HealthCheckContext.class) Closure closure) {
         def context = new HealthCheckContext(this);
         addToDataList('healthChecks', context)
         context.with(closure)
     }
 
-    def healthCheck(HealthCheckContext.Protocol protocol, Closure closure) {
+    def healthCheck(HealthCheckContext.Protocol protocol,
+                    @DelegatesTo(value = HealthCheckContext.class) Closure closure) {
         this.healthCheck(protocol).with(closure)
     }
 
-    def upgradeStrategy(Closure closure) {
+    def upgradeStrategy(@DelegatesTo(value = UpgradeStrategyContext.class) Closure closure) {
         new UpgradeStrategyContext(data).with(closure)
     }
 

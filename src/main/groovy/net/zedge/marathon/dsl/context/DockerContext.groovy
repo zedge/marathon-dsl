@@ -40,7 +40,7 @@ class DockerContext extends DslContext {
         data.forcePullImage = forcePullImage
     }
 
-    def portMapping(Closure closure) {
+    def portMapping(@DelegatesTo(value = DockerPortMappingContext.class) Closure closure) {
         def context = new DockerPortMappingContext()
         addToDataList('portMappings', context)
         context.with(closure)

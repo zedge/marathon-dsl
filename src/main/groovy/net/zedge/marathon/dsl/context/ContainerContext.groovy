@@ -30,13 +30,13 @@ class ContainerContext extends DslContext {
         data.type = type.name
     }
 
-    def docker(Closure closure) {
+    def docker(@DelegatesTo(value = DockerContext.class) Closure closure) {
         data.type = Type.DOCKER.name
         data.docker = new DockerContext()
         data.docker.with(closure)
     }
 
-    def volume(Closure closure) {
+    def volume(@DelegatesTo(value = ContainerVolumeContext.class) Closure closure) {
         def context = new ContainerVolumeContext()
         addToDataList('volumes', context)
         context.with(closure)
