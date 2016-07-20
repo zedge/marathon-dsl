@@ -53,7 +53,7 @@ abstract class DslScript extends Script {
      * @return
      */
     def gitHash(int length = 7) {
-        "git rev-parse HEAD".execute().text.substring(0, 7)
+        "git rev-parse HEAD".execute().text.substring(0, length)
     }
 
     /**

@@ -17,7 +17,6 @@
 
 package net.zedge.marathon.dsl.context
 
-import net.zedge.marathon.dsl.DslCompilationException
 import net.zedge.marathon.dsl.DslVerificationException
 import spock.lang.Specification
 
@@ -68,4 +67,5 @@ class ContainerContextTest extends Specification {
         then:
         thrown DslVerificationException
     }
+
 }
