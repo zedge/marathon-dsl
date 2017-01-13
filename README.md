@@ -1,3 +1,6 @@
+---
+keywords: marathon, dsl, docker, deployment
+---
 # Marathon Application DSL
 
 The Marathon Application DSL is a Groovy-based Domain Specific Language for
