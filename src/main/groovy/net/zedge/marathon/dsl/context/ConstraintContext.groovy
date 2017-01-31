@@ -117,6 +117,29 @@ class ConstraintContext extends DslContext {
     }
 
     /**
+     * MAX_PER accepts a number as parameter which specifies the maximum size of each group.
+     * It can be used to limit tasks across racks or datacenters.
+     *
+     * @param value
+     * @return
+     */
+    def maxPer(String value) {
+        constraint = [this.field, 'MAX_PER', value]
+    }
+
+    /**
+     * MAX_PER accepts a number as parameter which specifies the maximum size of each group.
+     * It can be used to limit tasks across racks or datacenters.
+     *
+     * @param field
+     * @param value
+     * @return
+     */
+    def maxPer(String field, String value) {
+        constraint = [field, 'MAX_PER', value]
+    }
+
+    /**
      * Constraints are represented by a list in Marathon's JSON app definition.
      * @return
      */

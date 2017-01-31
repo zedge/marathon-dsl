@@ -36,6 +36,11 @@ class ContainerVolumeContext extends DslContext {
         data.mode = mode.name
     }
 
+    def persistent(@DelegatesTo(value = PersistentVolumeContext.class) Closure closure) {
+        data.persistent = new PersistentVolumeContext()
+        data.persistent.with(closure)
+    }
+
     @Override
     def applyDefaults() {
         if (!data.mode) {

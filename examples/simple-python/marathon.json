@@ -1,0 +1,27 @@
+{
+    "id": "/simple-python-example",
+    "cpus": 0.1,
+    "mem": 256.0,
+    "container": {
+        "type": "DOCKER",
+        "image": "docker.example.com/example/simple-python:version",
+        "network": "BRIDGE",
+        "portMappings": [
+            {
+                "containerPort": 8080,
+                "protocol": "tcp"
+            }
+        ]
+    },
+    "healthChecks": [
+        {
+            "protocol": "HTTP",
+            "path": "/",
+            "timeoutSeconds": 10
+        }
+    ],
+    "upgradeStrategy": {
+        "minimumHealthCapacity": 1.0,
+        "maximumOverCapacity": 1.0
+    }
+}

@@ -199,4 +199,9 @@ class AppContext extends DslContext {
         roles.each { addToDataList('acceptedResourceRoles', it) }
     }
 
+    def residency(@DelegatesTo(value = ResidencyContext.class) Closure closure) {
+        data.residency = new ResidencyContext()
+        data.residency.with(closure)
+    }
+
 }
