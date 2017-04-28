@@ -52,7 +52,7 @@ abstract class MarathonDslScript extends Script {
      * @return
      */
     def gitHash() {
-        'git rev-parse --short HEAD'.execute().text
+        'git rev-parse --short HEAD'.execute().text.trim()
     }
 
     /**
