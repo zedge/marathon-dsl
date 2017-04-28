@@ -95,7 +95,7 @@ bintray {
         vcsUrl = 'https://github.com/zedge/marathon-dsl.git'
         labels = ['marathon', 'mesos', 'dsl']
         dryRun = false
-        publish = false
+        publish = true
         version {
             name = project.version
             desc = "Marathon-DSL version ${project.version}"
