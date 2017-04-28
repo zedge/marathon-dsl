@@ -13,23 +13,22 @@ apply plugin: 'groovy'
 apply plugin: 'jacoco'
 apply plugin: 'maven-publish'
 
-group = "net.zedge.marathon.dsl"
-description = "DSL to make defining Marathon applications easier"
+group = 'net.zedge.marathon.dsl'
+description = 'DSL to make defining Marathon applications easier'
 
 mainClassName = 'net.zedge.marathon.MarathonDslMain'
-applicationDefaultJvmArgs = ["-Dnet.zedge.marathon.dsl.baseclass=net.zedge.marathon.dsl.DslScript"]
 
 ext {
     slf4jVersion = '1.7.13'
-    unsnapshottedVersion = version.replaceAll("-SNAPSHOT", "")
+    unsnapshottedVersion = version.replaceAll('-SNAPSHOT', '')
 }
 
 dependencies {
-    compile "org.codehaus.groovy:groovy-all:2.4.6"
+    compile 'org.codehaus.groovy:groovy-all:2.4.6'
     compile 'commons-cli:commons-cli:1.3.1'
     testCompile "org.slf4j:slf4j-api:${slf4jVersion}"
     testCompile "org.slf4j:slf4j-nop:${slf4jVersion}"
-    testCompile "org.spockframework:spock-core:1.0-groovy-2.4"
+    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
     testCompile 'org.objenesis:objenesis:2.2'
     testCompile( 'com.athaydes:spock-reports:1.2.10' ) {
         transitive = false // this avoids affecting your version of Groovy/Spock

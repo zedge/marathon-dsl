@@ -30,36 +30,41 @@ import org.codehaus.groovy.runtime.InvokerHelper
 /**
  * @author stig@zedge.net
  */
-class DslScriptRunner {
+class MarathonDslScriptRunner {
 
     static final String BASECLASS_PROPERTY = 'net.zedge.marathon.dsl.baseclass'
 
-    static DslScript runDslScript(File scriptFile, ClusterConfig marathonConfig) {
+    ClusterConfig clusterConfig
+
+    MarathonDslScriptRunner(ClusterConfig clusterConfig) {
+        this.clusterConfig = clusterConfig
+    }
+
+    MarathonDslScript runDslScript(File scriptFile) {
         Binding binding = new Binding()
-        binding.setVariable('marathonConfig', marathonConfig)
-        binding.setVariable('cluster', marathonConfig.name)
-        String baseClassName = System.getProperty(BASECLASS_PROPERTY) ?: DslScript.class.getName()
+        binding.setVariable('marathonConfig', clusterConfig)
+        binding.setVariable('cluster', clusterConfig.name)
+        String baseClassName = System.getProperty(BASECLASS_PROPERTY) ?: MarathonDslScript.class.getName()
         runDslScript(scriptFile, binding, baseClassName)
     }
 
-    static DslScript runDslScript(File scriptFile, Binding binding, String baseClassName) {
+    MarathonDslScript runDslScript(File scriptFile, Binding binding, String scriptBaseClass) {
 
-        ClassLoader parentClassLoader = DslScriptRunner.classLoader
+        ClassLoader parentClassLoader = MarathonDslScriptRunner.classLoader
         String scriptBody = scriptFile.text
-        CompilerConfiguration config = createCompilerConfiguration(baseClassName)
         // Otherwise baseScript won't take effect
-        def compilerConfig = createCompilerConfiguration(baseClassName)
+        def compilerConfig = createCompilerConfiguration(scriptBaseClass)
         GroovyClassLoader groovyClassLoader = new GroovyClassLoader(parentClassLoader, compilerConfig)
         try {
             GroovyScriptEngine engine = new GroovyScriptEngine('.', groovyClassLoader)
             try {
-                engine.config = config
+                engine.config = compilerConfig
                 try {
                     Script script
                     String scriptBaseName = scriptFile.name.replaceAll(/[^a-zA-Z_]/, '_')
                     Class cls = engine.groovyClassLoader.parseClass(scriptBody, scriptBaseName)
                     script = InvokerHelper.createScript(cls, binding)
-                    assert script instanceof DslScript
+                    assert script instanceof MarathonDslScript
                     script.run()
                     return script
                 } catch (CompilationFailedException e) {
@@ -71,20 +76,19 @@ class DslScriptRunner {
                 } catch (ScriptException e) {
                     throw new IOException('Unable to run script', e)
                 }
-
             } finally {
                 if (engine.groovyClassLoader instanceof Closeable) {
-                    ((Closeable) engine.groovyClassLoader).close()
+                    (engine.groovyClassLoader as Closeable).close()
                 }
             }
         } finally {
             if (groovyClassLoader instanceof Closeable) {
-                ((Closeable) groovyClassLoader).close()
+                (groovyClassLoader as Closeable).close()
             }
         }
     }
 
-    private static CompilerConfiguration createCompilerConfiguration(String baseClassName) {
+    protected CompilerConfiguration createCompilerConfiguration(String baseClassName) {
         CompilerConfiguration config = new CompilerConfiguration(CompilerConfiguration.DEFAULT)
         config.scriptBaseClass = baseClassName
 

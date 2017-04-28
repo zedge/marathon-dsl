@@ -23,12 +23,11 @@ import net.zedge.marathon.dsl.context.AppContext
 /**
  * @author stig@zedge.net
  */
-abstract class DslScript extends Script {
+abstract class MarathonDslScript extends Script {
 
     public List<AppContext> apps
-    protected AppContext currentAppContext
 
-    public DslScript() {
+    MarathonDslScript() {
         this.apps = []
     }
 
@@ -52,8 +51,8 @@ abstract class DslScript extends Script {
      * @param length
      * @return
      */
-    def gitHash(int length = 7) {
-        "git rev-parse HEAD".execute().text.substring(0, length)
+    def gitHash() {
+        'git rev-parse --short HEAD'.execute().text
     }
 
     /**
@@ -63,7 +62,7 @@ abstract class DslScript extends Script {
      * @param defaultValue
      * @return
      */
-    def env(String name, String defaultValue = "") {
+    def env(String name, String defaultValue = '') {
         System.getenv(name) ?: defaultValue
     }
 

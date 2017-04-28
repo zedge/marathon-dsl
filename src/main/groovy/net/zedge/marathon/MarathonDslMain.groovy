@@ -19,9 +19,9 @@ package net.zedge.marathon
 
 import groovy.json.JsonOutput
 import net.zedge.marathon.dsl.DslCompilationException
-import net.zedge.marathon.dsl.DslScript
+import net.zedge.marathon.dsl.MarathonDslScript
 import net.zedge.marathon.dsl.DslExecutionException
-import net.zedge.marathon.dsl.DslScriptRunner
+import net.zedge.marathon.dsl.MarathonDslScriptRunner
 
 /**
  * @author stig@zedge.net
@@ -40,14 +40,15 @@ class MarathonDslMain {
         cliBuilder.h(longOpt: 'help', 'Usage information')
     }
 
-    public static void main(String[] argv) {
+    static void main(String[] argv) {
         def options = parseOptions(argv)
         List<String> args = options.arguments()
 
         def config = makeMarathonConfig()
-        DslScript script = null
+        MarathonDslScript script = null
+        MarathonDslScriptRunner runner = new MarathonDslScriptRunner(config)
         try {
-            script = DslScriptRunner.runDslScript(new File(args[0]), config)
+            script = runner.runDslScript(new File(args[0]))
         } catch (DslExecutionException e) {
             System.err.println("${MAIN_COMMAND}: ${e.message}")
             System.exit(1)
@@ -60,7 +61,7 @@ class MarathonDslMain {
         }
         if (!script) {
             cliBuilder.usage()
-            System.exit(0)
+            System.exit(1)
         }
         String json = script.toJsonString()
         println System.console() ? JsonOutput.prettyPrint(json) : json
