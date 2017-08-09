@@ -45,27 +45,6 @@ abstract class MarathonDslScript extends Script {
         currentAppContext
     }
 
-    /**
-     * Retrieve an N character git Hash (default 7) of the current HEAD.
-     *
-     * @param length
-     * @return
-     */
-    def gitHash() {
-        'git rev-parse --short HEAD'.execute().text.trim()
-    }
-
-    /**
-     * Retrieve an environment variable, or a default value if not defined.
-     *
-     * @param name
-     * @param defaultValue
-     * @return
-     */
-    def env(String name, String defaultValue = '') {
-        System.getenv(name) ?: defaultValue
-    }
-
     def toJsonString() {
         return JsonOutput.toJson(apps.collect { it.toJsonData() })
     }

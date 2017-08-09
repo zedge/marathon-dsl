@@ -33,8 +33,7 @@ class DslContext {
      *
      * @return Map
      */
-
-    def Object toJsonData() {
+    Object toJsonData() {
         this.applyDefaults()
         this.verifyConfig()
         Map configCopy = [:]

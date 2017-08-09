@@ -204,4 +204,22 @@ class AppContext extends DslContext {
         data.residency.with(closure)
     }
 
+    // Macros / utility methods:
+    /**
+     * Retrieve a 7-character git hash of the current HEAD.
+     */
+    static String gitHash() {
+        'git rev-parse --short HEAD'.execute().text.trim()
+    }
+
+    /**
+     * Retrieve an environment variable, or a default value if not defined.
+     *
+     * @param name
+     * @return
+     */
+    static String env(String name) {
+        System.getenv(name)
+    }
+
 }
